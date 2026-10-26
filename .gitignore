@@ -1,0 +1,48 @@
+# Build output
+/bin/
+/dist/
+/freedeep
+/freedeep.exe
+*.test
+coverage.out
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.log
+auth.json
+deepseek-auth.json
+**/auth.json
+**/deepseek-auth.json
+*auth*.json
+**/*auth*.json
+!auth.example.json
+cookies.json
+*cookies*.json
+**/*cookies*.json
+credentials.json
+*credentials*.json
+**/*credentials*.json
+secrets/
+.secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+# Aggregate account export holding live tokens/cookies — never commit.
+deepseek-accounts.json
+# Runtime-added auth files contain secrets — keep the dir, ignore its contents.
+data/accounts/*.json
+/accounts/
+.chrome-*-profile*/
+.chrome-profile-deepseek/
+.chrome-for-testing-profile-deepseek/
+.chrome-for-testing-profile-deepseek.stale-*/
+*.session.json
+.DS_Store
+.idea/
+.vscode/
+*.pdf

@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "freedeep Auth Exporter",
+  "version": "1.0",
+  "description": "Export a DeepSeek Web session for local use with freedeep",
+  "permissions": ["cookies", "storage", "downloads"],
+  "host_permissions": ["https://chat.deepseek.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://chat.deepseek.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  }
+}

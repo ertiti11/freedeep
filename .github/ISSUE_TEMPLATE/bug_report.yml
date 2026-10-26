@@ -1,0 +1,70 @@
+name: Bug report
+description: Report a reproducible problem in freedeep
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve freedeep.
+
+        **Never attach or paste `deepseek-auth.json`, cookies, tokens, `.env`, browser profiles, private keys, or unredacted debug logs.** Revoke any credential that has already been exposed.
+  - type: input
+    id: version
+    attributes:
+      label: freedeep version
+      description: Output of `freedeep version`, or the commit SHA.
+      placeholder: v1.0.0
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Linux
+        - macOS
+        - Windows
+        - Container
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: api
+    attributes:
+      label: API surface
+      options:
+        - OpenAI Chat Completions
+        - Anthropic Messages
+        - OpenAI Responses
+        - CLI / login
+        - General server / container
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Provide the smallest safe example that demonstrates the issue.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Redacted logs
+      description: Remove tokens, cookies, account IDs, public IPs, and local paths before pasting logs.
+      render: text
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I confirmed that this report contains no credentials or private session data.
+          required: true

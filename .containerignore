@@ -1,0 +1,10 @@
+# Keep the build context free of browser sessions, auth exports, local
+# binaries, and any future unlisted files. Containerfile copies this allow-list.
+*
+!Containerfile
+!.containerignore
+!go.mod
+!cmd/
+!internal/
+internal/livetest/
+**/*_test.go

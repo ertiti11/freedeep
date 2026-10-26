@@ -1,0 +1,44 @@
+#!/usr/bin/env sh
+set -eu
+
+root=$(git rev-parse --show-toplevel)
+cd "$root"
+
+gitleaks_bin=$(git config --get freedeep.gitleaksPath || true)
+if [ -z "$gitleaks_bin" ]; then
+  gitleaks_bin=$(command -v gitleaks || true)
+fi
+if [ -z "$gitleaks_bin" ] || [ ! -x "$gitleaks_bin" ]; then
+  echo "freedeep: Gitleaks is required before committing." >&2
+  echo "Run ./scripts/install-hooks.ps1 on Windows or ./scripts/install-hooks.sh on Unix." >&2
+  exit 1
+fi
+
+tmp_dir=$(mktemp -d 2>/dev/null || mktemp -d -t freedeep-precommit)
+cleanup() {
+  rm -rf "$tmp_dir"
+}
+trap cleanup EXIT INT TERM
+
+echo "[freedeep] scanning the staged tree for secrets"
+git checkout-index --all --prefix="$tmp_dir/"
+"$gitleaks_bin" dir "$tmp_dir" --redact --no-banner
+
+echo "[freedeep] checking Go formatting"
+unformatted=$(gofmt -l cmd internal)
+if [ -n "$unformatted" ]; then
+  echo "These files need gofmt:" >&2
+  echo "$unformatted" >&2
+  exit 1
+fi
+
+echo "[freedeep] checking tracked sensitive paths"
+go test ./cmd/freedeep -run TestSensitiveFilesAreNotTracked -count=1
+
+echo "[freedeep] running go vet"
+go vet ./...
+
+echo "[freedeep] running tests"
+go test ./...
+
+echo "[freedeep] commit checks passed"

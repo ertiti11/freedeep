@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+set -eu
+
+root=$(git rev-parse --show-toplevel)
+cd "$root"
+
+gitleaks_bin=$(git config --get freedeep.gitleaksPath || true)
+if [ -z "$gitleaks_bin" ]; then
+  gitleaks_bin=$(command -v gitleaks || true)
+fi
+if [ -z "$gitleaks_bin" ] || [ ! -x "$gitleaks_bin" ]; then
+  echo "freedeep: Gitleaks is required before pushing." >&2
+  echo "Run ./scripts/install-hooks.ps1 on Windows or ./scripts/install-hooks.sh on Unix." >&2
+  exit 1
+fi
+
+echo "[freedeep] scanning complete reachable history for secrets"
+"$gitleaks_bin" git . --redact --no-banner --log-opts="--all"
+
+echo "[freedeep] running go vet and tests"
+go vet ./...
+go test ./...
+
+echo "[freedeep] push checks passed"
